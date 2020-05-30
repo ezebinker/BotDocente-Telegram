@@ -25,7 +25,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/{}'.format(TOKEN), methods=['POST'])
+@app.route('/{}'.format(TOKEN), methods=['GET','POST'])
 def respond():
     db.setup()
     update = telegram.Update.de_json(request.get_json(force=True), bot)
