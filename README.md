@@ -21,5 +21,5 @@ Desarrollar un **bot** alojado en la plataforma Telegram que pueda entrenarse en
 * SpaCy
 
 ## Ejecución
-Para ejecutar este proyecto: clonar, posicionarse en la raíz y por último escribir en la consola del sistema operativo:&nbsp;
+Para ejecutar este proyecto: clonar, posicionarse en la raíz y por último escribir en la consola del sistema operativo:\;
 ```python app.py```
