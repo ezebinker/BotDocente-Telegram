@@ -8,12 +8,18 @@ class DBHelper:
         self.conn = sqlite3.connect(dbname, check_same_thread=False)
 
     def setup(self):
+        #drop1 = "DROP TABLE IF EXISTS archivos"
+        #drop2 = "DROP TABLE IF EXISTS conceptos"
+        #drop3 = "DROP TABLE IF EXISTS conceptosxarchivos"
         tbl1stmt = "CREATE TABLE IF NOT EXISTS archivos (id INTEGER NOT NULL, nombre TEXT, topPalabras TEXT, PRIMARY KEY (id), UNIQUE (nombre))"
         nombreidx = "CREATE INDEX IF NOT EXISTS nombreIndex ON archivos (nombre ASC)" 
         tbl2stmt = "CREATE TABLE IF NOT EXISTS conceptos (id INTEGER NOT NULL, texto TEXT, PRIMARY KEY (id))"
         textoidx = "CREATE INDEX IF NOT EXISTS textoIndex ON conceptos (texto ASC)"
-        tbl3stmt = "CREATE TABLE IF NOT EXISTS conceptosxarchivos (archivo_id INTEGER, concepto_id INTEGER, FOREIGN KEY (archivo_id) REFERENCES archivos (id),FOREIGN KEY (concepto_id)REFERENCES conceptos (id) ) "
+        tbl3stmt = "CREATE TABLE IF NOT EXISTS conceptosxarchivos (archivo_id INTEGER, concepto_id INTEGER, texto_busqueda TEXT, FOREIGN KEY (archivo_id) REFERENCES archivos (id),FOREIGN KEY (concepto_id)REFERENCES conceptos (id) ) "
 
+        #self.conn.execute(drop1)
+        #self.conn.execute(drop2)
+        #self.conn.execute(drop3)
         self.conn.execute(tbl1stmt)
         self.conn.execute(nombreidx)
         self.conn.execute(tbl2stmt)
@@ -22,8 +28,20 @@ class DBHelper:
         self.conn.commit()
 
     def add_archivo(self, archivo):
-        stmt = "INSERT INTO temas (nombre, topPalabras) VALUES (?,?)"
+        stmt = "INSERT INTO archivos (nombre, topPalabras) VALUES (?,?)"
         args = (archivo.nombre, archivo.topPalabras)
+        self.conn.execute(stmt, args)
+        self.conn.commit()
+
+    def add_concepto(self, concepto):
+        stmt = "INSERT INTO conceptos (texto) VALUES (?)"
+        args = (concepto,)
+        self.conn.execute(stmt, args)
+        self.conn.commit()
+
+    def add_conceptosxarchivo(self, archivo, concepto, texto_busqueda):
+        stmt = "INSERT INTO conceptosxarchivos (archivo_id, concepto_id, texto_busqueda) VALUES (?,?,?)"
+        args = (archivo,concepto,texto_busqueda)
         self.conn.execute(stmt, args)
         self.conn.commit()
 
@@ -42,8 +60,26 @@ class DBHelper:
         for row in rows:
             archivo = Archivo(row[0],row[1])
             datos.append(archivo)
-            print (archivo.nombre + " " + archivo.topPalabras)
         return datos
 
+    def get_conceptos(self):
+        stmt = "SELECT texto FROM conceptos"
+        cursor = self.conn.execute(stmt)
+        rows = cursor.fetchall()
+        datos = []
+        for row in rows:
+            datos.append(row[0])
+        return datos
+
+    def get_rows_by_word(self, search):
+        stmt = "SELECT texto_busqueda FROM conceptosxarchivos WHERE texto_busqueda LIKE '%"+search+"%'"
+        cursor = self.conn.execute(stmt)
+        print(cursor.rowcount)
+        rows = cursor.fetchall()
+        answers = []
+        for row in rows:
+            answers.append(row[0])
+        return answers
+
 db = DBHelper()
-print(str(db.get_archivos()))
+db.setup()

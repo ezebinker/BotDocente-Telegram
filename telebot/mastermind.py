@@ -18,6 +18,8 @@ def strip_accents(text):
     return str(text)
 
 def get_response(msg, db):
+    response=[]
+    busco_concepto= False
 
     saludos_para_comparar=[]
     for i in range(len(saludos)):
@@ -29,21 +31,33 @@ def get_response(msg, db):
     msg_final = strip_accents(msg_lower)
     palabras = msg_lower.split()
 
-    temas = db.get_temas()
+    conceptos = db.get_conceptos()
 
     if len([i for i in palabras if i in saludos_para_comparar])>0:
-        response=random.choice(saludos)
+        response.append(random.choice(saludos))
     elif msg_final in saludos_para_comparar:
-        response=random.choice(saludos)
-    elif len([i for i in palabras if i in temas])>0:
-        response= "Ah... veo que querés hablar de "+msg_lower 
+        response.append(random.choice(saludos))
+    elif len([i for i in palabras if i in conceptos])>0:
+        response.append( "Ah... veo que querés hablar de "+msg_lower) 
     elif msg_final == "/done":
         #keyboard = build_keyboard(items)
-        response="Genial!!"
+        response.append("Genial!!")
     elif msg_final == "/start":
-        response="Hola! Soy tu BotDocente. Puedo ayudarte con tus materias. Preguntame lo que necesites."
+        response.append("Hola! Soy tu BotDocente. Puedo ayudarte con tus materias. Preguntame lo que necesites.")
     elif msg_final.startswith("/"):
-        response="Parece que quieres activar algún comando..."
+        response.append("Parece que quieres activar algún comando...")
     else:
-        response="No te entiendo..."
+        for palabra in palabras:
+            frases = db.get_rows_by_word(palabra)
+            if len(frases)>0:
+                busco_concepto=True
+                return 
+
+        if busco_concepto:
+            if frases is not None:
+                for frase in frases:
+                    response.append(frase)
+        else:
+            response.append("No te entiendo...")
+
     return response

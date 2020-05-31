@@ -6,7 +6,21 @@ import pandas as pd
 from cgitb import text
 import nltk
 import spacy
+import unicodedata
 from model.archivo import Archivo
+
+def strip_accents(text):
+
+    try:
+        text = unicode(text, 'utf-8')
+    except NameError: # unicode is a default on python 3 
+        pass
+
+    text = unicodedata.normalize('NFD', text)\
+           .encode('ascii', 'ignore')\
+           .decode("utf-8")
+
+    return str(text)
 
 def process_file(source, db):
     
@@ -47,7 +61,6 @@ def process_file(source, db):
         f.close() 
 
     elif extension=='.txt':
-        print("hola")
 
         file = open(source,mode='r')
         contenido = file.read()
@@ -56,23 +69,6 @@ def process_file(source, db):
         print("No se como abrir eso! ")
 
     #### GENERAL A CUALQUIER ARCHIVO DE CONTENIDO ####
-
-    #Obtenemos los conceptos o palabras que más aparecen en el contenido
-    freq = nltk.FreqDist(contenido)
-    
-    topPalabras = '['
-
-    for key,val in sorted(freq.items()):
-        if val>1:
-            itemActual='{'+str(key) + ',' + str(val) + '}'
-            topPalabras+=str(itemActual)
-    
-    topPalabras+=']'
-
-    archivo = Archivo(nombre,topPalabras)
-
-    db.add_archivo(archivo)
-    #id_archivo = db.get_last_id
     
     #Elimino residuos del contenido gral
     contenido= [frase.replace('\n', '') for frase in contenido]
@@ -82,7 +78,38 @@ def process_file(source, db):
     strcont = ' '.join(contenido)
 
     oraciones = strcont.split('.')
-    print(oraciones)
+
+    #Obtenemos los conceptos o palabras que más aparecen en el contenido
+    freq = nltk.FreqDist(contenido)
+        
+    claves = []
+    topPalabras = '['
+
+    for key,val in sorted(freq.items()):
+        if val>1:
+            if len(key)>1:
+                itemActual='{'+str(key) + ',' + str(val) + '}'
+                topPalabras+=str(itemActual)
+                #acá habría que chequear que no sea un sustantivo...
+                claves.append(str(key))
+
+    topPalabras+=']'
+
+    archivo = Archivo(nombre,topPalabras)
+
+    db.add_archivo(archivo)
+    id_archivo = db.get_last_id()
+
+    for key in claves:
+        db.add_concepto(key)
+
+        id_concepto = db.get_last_id()
+
+        matching= [s for s in oraciones if key in s]
+        for texto in matching:
+            texto_a_guardar= texto.lower()
+            texto_a_guardar = strip_accents(texto_a_guardar)
+            db.add_conceptosxarchivo(id_archivo,id_concepto,texto_a_guardar)
 
     # USO DE LIBRERÍA SPACY
 
