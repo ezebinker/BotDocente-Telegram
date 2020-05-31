@@ -7,17 +7,16 @@ class DBHelper:
         self.conn = sqlite3.connect(dbname, check_same_thread=False)
 
     def setup(self):
-        tbl1stmt = "CREATE TABLE IF NOT EXISTS temas (id INTEGER NOT NULL, nombre TEXT, PRIMARY KEY (id), UNIQUE (nombre))"
-        nombreidx = "CREATE INDEX IF NOT EXISTS nombreIndex ON temas (nombre ASC)" 
-        tbl2stmt = "CREATE TABLE IF NOT EXISTS respuestas (id INTEGER NOT NULL, texto TEXT, texto_busqueda TEXT, en_respuesta_a TEXT, PRIMARY KEY (id))"
-        textoidx = "CREATE INDEX IF NOT EXISTS textoIndex ON respuestas (texto ASC)"
-        enrespidx= "CREATE INDEX IF NOT EXISTS enrespIndex ON respuestas (en_respuesta_a ASC)"
-        tbl3stmt = "CREATE TABLE IF NOT EXISTS temaspreguntas (tema_id INTEGER, respuesta_id INTEGER, FOREIGN KEY (tema_id) REFERENCES temas (id),FOREIGN KEY (respuesta_id)REFERENCES respuestas (id) ) "
+        tbl1stmt = "CREATE TABLE IF NOT EXISTS archivos (id INTEGER NOT NULL, nombre TEXT, topPalabras TEXT, PRIMARY KEY (id), UNIQUE (nombre))"
+        nombreidx = "CREATE INDEX IF NOT EXISTS nombreIndex ON archivos (nombre ASC)" 
+        tbl2stmt = "CREATE TABLE IF NOT EXISTS conceptos (id INTEGER NOT NULL, texto TEXT, PRIMARY KEY (id))"
+        textoidx = "CREATE INDEX IF NOT EXISTS textoIndex ON conceptos (texto ASC)"
+        tbl3stmt = "CREATE TABLE IF NOT EXISTS conceptosxarchivos (archivo_id INTEGER, concepto_id INTEGER, FOREIGN KEY (archivo_id) REFERENCES archivos (id),FOREIGN KEY (concepto_id)REFERENCES conceptos (id) ) "
+
         self.conn.execute(tbl1stmt)
         self.conn.execute(nombreidx)
         self.conn.execute(tbl2stmt)
         self.conn.execute(textoidx)
-        self.conn.execute(enrespidx)
         self.conn.execute(tbl3stmt)
         self.conn.commit()
 
@@ -39,3 +38,6 @@ class DBHelper:
         cursor = self.conn.execute(stmt)
         result = [item[0] for item in cursor.fetchall()]
         return result
+
+db = DBHelper()
+db.setup()
