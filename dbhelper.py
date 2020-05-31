@@ -1,4 +1,5 @@
 import sqlite3
+from model.archivo import Archivo
 
 class DBHelper:
 
@@ -20,9 +21,9 @@ class DBHelper:
         self.conn.execute(tbl3stmt)
         self.conn.commit()
 
-    def add_tema(self, nombre):
-        stmt = "INSERT INTO temas (nombre) VALUES (?)"
-        args = (nombre, )
+    def add_archivo(self, archivo):
+        stmt = "INSERT INTO temas (nombre, topPalabras) VALUES (?,?)"
+        args = (archivo.nombre, archivo.topPalabras)
         self.conn.execute(stmt, args)
         self.conn.commit()
 
@@ -33,11 +34,16 @@ class DBHelper:
             id = row[0]
         return id
 
-    def get_temas(self):
-        stmt = "SELECT nombre FROM temas"
+    def get_archivos(self):
+        stmt = "SELECT nombre, topPalabras FROM archivos"
         cursor = self.conn.execute(stmt)
-        result = [item[0] for item in cursor.fetchall()]
-        return result
+        rows = cursor.fetchall()
+        datos = []
+        for row in rows:
+            archivo = Archivo(row[0],row[1])
+            datos.append(archivo)
+            print (archivo.nombre + " " + archivo.topPalabras)
+        return datos
 
 db = DBHelper()
-db.setup()
+print(str(db.get_archivos()))
