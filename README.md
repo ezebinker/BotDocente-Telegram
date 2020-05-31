@@ -21,5 +21,11 @@ Desarrollar un **bot** alojado en la plataforma Telegram que pueda entrenarse en
 * SpaCy
 
 ## Ejecución
-Para ejecutar este proyecto: clonar, posicionarse en la raíz y por último escribir en la consola del sistema operativo: \
-```python app.py```
+Para ejecutar este proyecto: 
+1. Clonar el repositorio ```git clone https://github.com/ezebinker/BotDocente-Telegram.git```
+2. Posicionarse en la raíz ```cd BotDocente-Telegram```
+3. Iniciar el servidor Flask ```python app.py```
+4. Levantar una URL pública con ngrok ```./ngrok http 5000```
+5. Ingresar a la URL provista por ngrok y al final escribir /setwebhook para que el bot escuche ese endpoint
+
+
