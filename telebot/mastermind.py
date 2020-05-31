@@ -1,5 +1,6 @@
 import random
 import unicodedata
+from model.archivo import Archivo
 
 saludos = ["Hola", "Cómo estas", "Qué tal", "Todo en orden", "Holaa", "Holaaa", "Holaaaa", "Buenas", "Buenas!","Cómo va"]
 

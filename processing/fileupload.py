@@ -6,6 +6,7 @@ import pandas as pd
 from cgitb import text
 import nltk
 import spacy
+from model.archivo import Archivo
 
 def process_file(source, db):
     
@@ -13,9 +14,6 @@ def process_file(source, db):
     base=os.path.basename(source)
     nombre=os.path.splitext(base)[0]
     extension=os.path.splitext(base)[1]
-    
-    db.add_tema(nombre)
-    id_tema = db.get_last_id()
 
     contenido = []
 
@@ -60,11 +58,21 @@ def process_file(source, db):
     #### GENERAL A CUALQUIER ARCHIVO DE CONTENIDO ####
 
     #Obtenemos los conceptos o palabras que más aparecen en el contenido
-    '''freq = nltk.FreqDist(contenido)
+    freq = nltk.FreqDist(contenido)
     
+    topPalabras = '['
+
     for key,val in sorted(freq.items()):
         if val>1:
-            print (str(key) + ':' + str(val))'''
+            itemActual='{'+str(key) + ',' + str(val) + '}'
+            topPalabras+=str(itemActual)
+    
+    topPalabras+=']'
+
+    archivo = Archivo(nombre,topPalabras)
+
+    db.add_archivo(archivo)
+    #id_archivo = db.get_last_id
     
     #Elimino residuos del contenido gral
     contenido= [frase.replace('\n', '') for frase in contenido]
@@ -93,4 +101,4 @@ def process_file(source, db):
 
     #FIN DE BLOQUE LIBRERÍA SPACY
 
-    return str(id_tema) + "      " + strcont
+    return archivo.nombre + "      " + archivo.topPalabras
