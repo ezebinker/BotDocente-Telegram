@@ -1,6 +1,7 @@
 import random
 import unicodedata
 from model.archivo import Archivo
+from model.concepto import Concepto
 
 saludos = ["Hola", "Cómo estas", "Qué tal", "Todo en orden", "Holaa", "Holaaa", "Holaaaa", "Buenas", "Buenas!","Cómo va"]
 
@@ -33,12 +34,19 @@ def get_response(msg, db):
 
     conceptos = db.get_conceptos()
 
+    conceptos_nombre = []
+    for concepto in conceptos:
+        conceptos_nombre.append(concepto.texto)
+
     if len([i for i in palabras if i in saludos_para_comparar])>0:
         response.append(random.choice(saludos))
     elif msg_final in saludos_para_comparar:
         response.append(random.choice(saludos))
-    elif len([i for i in palabras if i in conceptos])>0:
-        response.append( "Ah... veo que querés hablar de "+msg_lower) 
+    elif len([i for i in palabras if i in conceptos_nombre])>0:
+        response.append( "Ah... veo que querés hablar de "+msg_lower)
+        frases = db.get_rows_by_concept(msg_lower)
+        for frase in frases:
+            response.append(frase)
     elif msg_final == "/done":
         #keyboard = build_keyboard(items)
         response.append("Genial!!")
@@ -51,7 +59,6 @@ def get_response(msg, db):
             frases = db.get_rows_by_word(palabra)
             if len(frases)>0:
                 busco_concepto=True
-                return 
 
         if busco_concepto:
             if frases is not None:

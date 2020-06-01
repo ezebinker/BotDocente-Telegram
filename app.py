@@ -20,14 +20,14 @@ app.config['MAX_CONTENT_PATH'] = 16 * 1024 * 1024
 os.makedirs(os.path.join(app.instance_path, 'subidas'), exist_ok=True)
 
 db = DBHelper()
+db.setup()
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/{}'.format(TOKEN), methods=['GET','POST'])
+@app.route('/{}'.format(TOKEN), methods=['POST'])
 def respond():
-    db.setup()
     update = telegram.Update.de_json(request.get_json(force=True), bot)
 
     chat_id = update.message.chat.id
@@ -35,10 +35,11 @@ def respond():
 
     text = update.message.text.encode('utf-8').decode()
 
-    responses = get_response(text, db)
-    print (str(responses))
-    for response in responses:
-        bot.sendMessage(chat_id=chat_id, text=response)
+    if len(text)>0:
+        responses = get_response(text, db)
+        print (str(responses))
+        for response in responses:
+            bot.sendMessage(chat_id=chat_id, text=response)
 
     return 'ok'
 
@@ -62,9 +63,9 @@ def uploader():
         path = os.path.join(app.instance_path, 'subidas', secure_filename(f.filename))
         f.save(path)
         contenido = process_file(path, db)
-        return contenido
+        return render_template("exitoso.html")
     else:
-        return render_template("index.html")
+        return render_template("error.html")
 
 if __name__ == '__main__':
     app.run(threaded=True)

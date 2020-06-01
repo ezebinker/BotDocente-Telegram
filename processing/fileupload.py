@@ -8,6 +8,7 @@ import nltk
 import spacy
 import unicodedata
 from model.archivo import Archivo
+from model.concepto import Concepto
 
 def strip_accents(text):
 
@@ -95,13 +96,15 @@ def process_file(source, db):
 
     topPalabras+=']'
 
-    archivo = Archivo(nombre,topPalabras)
+    archivo = Archivo(nombre,topPalabras,source)
 
     db.add_archivo(archivo)
     id_archivo = db.get_last_id()
 
     for key in claves:
-        db.add_concepto(key)
+        concepto= key.lower()
+        concepto = strip_accents(concepto)
+        db.add_concepto(concepto,id_archivo)
 
         id_concepto = db.get_last_id()
 
