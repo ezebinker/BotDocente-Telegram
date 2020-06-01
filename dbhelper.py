@@ -10,18 +10,18 @@ class DBHelper:
         self.conn = sqlite3.connect(dbname, check_same_thread=False)
 
     def setup(self):
-        drop1 = "DROP TABLE IF EXISTS archivos"
-        drop2 = "DROP TABLE IF EXISTS conceptos"
-        drop3 = "DROP TABLE IF EXISTS conceptosxarchivos"
+        #drop1 = "DROP TABLE IF EXISTS archivos"
+        #drop2 = "DROP TABLE IF EXISTS conceptos"
+        #drop3 = "DROP TABLE IF EXISTS conceptosxarchivos"
         tbl1stmt = "CREATE TABLE IF NOT EXISTS archivos (id INTEGER NOT NULL, nombre TEXT, topPalabras TEXT, source TEXT, PRIMARY KEY (id), UNIQUE (nombre))"
         nombreidx = "CREATE INDEX IF NOT EXISTS nombreIndex ON archivos (nombre ASC)" 
         tbl2stmt = "CREATE TABLE IF NOT EXISTS conceptos (id INTEGER NOT NULL, texto TEXT, archivo INTEGER, PRIMARY KEY (id), FOREIGN KEY (archivo) REFERENCES archivos (id))"
         textoidx = "CREATE INDEX IF NOT EXISTS textoIndex ON conceptos (texto ASC)"
         tbl3stmt = "CREATE TABLE IF NOT EXISTS conceptosxarchivos (archivo_id INTEGER, concepto_id INTEGER, texto_busqueda TEXT, FOREIGN KEY (archivo_id) REFERENCES archivos (id),FOREIGN KEY (concepto_id)REFERENCES conceptos (id) ) "
 
-        self.conn.execute(drop1)
-        self.conn.execute(drop2)
-        self.conn.execute(drop3)
+        #self.conn.execute(drop1)
+        #self.conn.execute(drop2)
+        #self.conn.execute(drop3)
         self.conn.execute(tbl1stmt)
         self.conn.execute(nombreidx)
         self.conn.execute(tbl2stmt)
