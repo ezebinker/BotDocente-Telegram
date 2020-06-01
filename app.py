@@ -6,6 +6,7 @@ from telebot.mastermind import get_response
 from processing.fileupload import process_file
 import os
 from dbhelper import DBHelper
+from pptx import Presentation
 
 global bot
 global TOKEN
@@ -40,6 +41,10 @@ def respond():
         print (str(responses))
         for response in responses:
             bot.sendMessage(chat_id=chat_id, text=response)
+        
+        #TODO: Para mandar archivo...
+        #if archivo is not None:
+            #bot.send_document(chat_id=chat_id, document=prs, filename=archivo)
 
     return 'ok'
 

@@ -20,6 +20,7 @@ def strip_accents(text):
 
 def get_response(msg, db):
     response=[]
+    #archivo=""
     busco_concepto= False
 
     saludos_para_comparar=[]
@@ -44,7 +45,9 @@ def get_response(msg, db):
         response.append(random.choice(saludos))
     elif len([i for i in palabras if i in conceptos_nombre])>0:
         response.append( "Ah... veo que querés hablar de "+msg_lower)
-        frases = db.get_rows_by_concept(msg_lower)
+        frases = db.get_rows_by_concept(msg_final)
+        #TODO: en los conceptos también hay que recorrer palabra por palabra del mensaje como lo hago cuando no lo detecta... no usar el msg_final
+        #archivo = db.get_file_by_concept(msg_final)
         for frase in frases:
             response.append(frase)
     elif msg_final == "/done":
@@ -67,4 +70,4 @@ def get_response(msg, db):
         else:
             response.append("No te entiendo...")
 
-    return response
+    return response#, archivo

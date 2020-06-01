@@ -91,7 +91,7 @@ def process_file(source, db):
             if len(key)>1:
                 itemActual='{'+str(key) + ',' + str(val) + '}'
                 topPalabras+=str(itemActual)
-                #acá habría que chequear que no sea un sustantivo...
+                #TODO: acá habría que chequear que no sea un sustantivo...
                 claves.append(str(key))
 
     topPalabras+=']'
@@ -116,7 +116,6 @@ def process_file(source, db):
 
     # USO DE LIBRERÍA SPACY
 
-    #Obtengo referencias de nlp de la librería SpaCy
     #nlp=spacy.load('es_core_news_md')
 
     #doc = nlp(strcont)
@@ -127,7 +126,6 @@ def process_file(source, db):
     #print("Verbos:", [token.lemma_ for token in doc if token.pos_ == "VERB"])
 
     #sentencias = [s for s in doc.sents]
-    #print(sentencias[1])
 
     #FIN DE BLOQUE LIBRERÍA SPACY
 

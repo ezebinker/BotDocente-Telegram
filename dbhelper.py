@@ -74,6 +74,16 @@ class DBHelper:
             datos.append(concepto)
         return datos
 
+    def get_file_by_concept(self, concepto):
+        stmt = "SELECT distinct archivos.source FROM archivos INNER JOIN conceptos ON conceptos.archivo = archivos.id WHERE texto = ?"
+        args = (concepto,)
+        cursor = self.conn.execute(stmt,args)
+        rows = cursor.fetchall()
+        datos = []
+        for row in rows:
+            datos=row[0]
+        return datos
+
     def get_rows_by_word(self, search):
         stmt = "SELECT distinct texto_busqueda FROM conceptosxarchivos WHERE texto_busqueda LIKE '%"+search+"%' LIMIT 5"
         cursor = self.conn.execute(stmt)
