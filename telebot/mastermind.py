@@ -2,8 +2,9 @@ import random
 import unicodedata
 from model.archivo import Archivo
 from model.concepto import Concepto
+from telebot.credentials import bot_token, bot_user_name,URL
 
-saludos = ["Hola", "Cómo estas", "Qué tal", "Todo en orden", "Holaa", "Holaaa", "Holaaaa", "Buenas", "Buenas!","Cómo va"]
+saludos = ["Hola", "Cómo estas", "Qué tal", "Todo en orden", "Holaa", "Holaaa", "Holaaaa", "Buenas", "Buenas!","Cómo va","Buen día", "Buenos días", "Hola hola!", "Hola.","Buenos","Buenas buenas","Que tal!","Ciao","Qué le trae por aquí?"]
 
 def strip_accents(text):
 
@@ -53,6 +54,15 @@ def get_response(msg, db):
     elif msg_final == "/done":
         #keyboard = build_keyboard(items)
         response.append("Genial!!")
+    elif msg_final == "/archivos":
+        archivos = db.get_nombre_archivos()
+        response.append("Lista de archivos subidos a la plataforma Bot Docente: ")
+        lista = ""
+        for archivo in  archivos:
+            lista+= archivo + "\n"
+        response.append(lista)
+    elif msg_final == "/subirdocumento":
+        response.append("Para subir un documento de conocimiento al Bot Docente acceder al siguiente enlace: \n"+URL)
     elif msg_final == "/start":
         response.append("Hola! Soy tu BotDocente. Puedo ayudarte con tus materias. Preguntame lo que necesites.")
     elif msg_final.startswith("/"):

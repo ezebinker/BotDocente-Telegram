@@ -64,6 +64,15 @@ class DBHelper:
             datos.append(archivo)
         return datos
 
+    def get_nombre_archivos(self):
+        stmt = "SELECT nombre FROM archivos"
+        cursor = self.conn.execute(stmt)
+        rows = cursor.fetchall()
+        datos = []
+        for row in rows:
+            datos.append(row[0])
+        return datos
+
     def get_conceptos(self):
         stmt = "SELECT id, texto FROM conceptos"
         cursor = self.conn.execute(stmt)
