@@ -27,6 +27,11 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def clean(respuesta):
+    respuesta_final = respuesta.replace("('", "")
+    respuesta_final= respuesta_final.replace("',)", "")
+    return respuesta_final
+
 @app.route('/{}'.format(TOKEN), methods=['POST'])
 def respond():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
@@ -40,7 +45,9 @@ def respond():
         responses = get_response(text, db)
         print (str(responses))
         for response in responses:
-            bot.sendMessage(chat_id=chat_id, text=response)
+            respuesta = str(response)
+            respuesta = clean(respuesta)
+            bot.sendMessage(chat_id=chat_id, text=respuesta)
         
         #TODO: Para mandar archivo...
         #if archivo is not None:
