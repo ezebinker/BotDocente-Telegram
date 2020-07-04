@@ -103,10 +103,11 @@ class DBHelper:
         stmt = "SELECT id FROM conceptos WHERE texto LIKE '%"+search+"%'"
         cursor = self.conn.execute(stmt)
         rows = cursor.fetchone()
-        id= rows[0]
-        stmt = "SELECT distinct texto_busqueda FROM conceptosxarchivos WHERE concepto_id ="+str(id)+" LIMIT 5"
-        cursor = self.conn.execute(stmt)
-        rows = cursor.fetchall()
+        if rows:
+            id= rows[0]
+            stmt = "SELECT distinct texto_busqueda FROM conceptosxarchivos WHERE concepto_id ="+str(id)+" LIMIT 5"
+            cursor = self.conn.execute(stmt)
+            rows = cursor.fetchall()
         return rows
 
 db = DBHelper()

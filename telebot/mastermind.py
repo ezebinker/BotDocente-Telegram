@@ -68,8 +68,9 @@ def get_response(msg, db):
         frases = db.get_rows_by_concept(msg_final)
         #TODO: en los conceptos también hay que recorrer palabra por palabra del mensaje como lo hago cuando no lo detecta... no usar el msg_final
         #archivo = db.get_file_by_concept(msg_final)
-        for frase in frases:
-            response.append(frase)
+        if frases:
+            for frase in frases:
+                response.append(frase)
     elif msg_final == "/archivos":
         archivos = db.get_nombre_archivos()
         response.append("Lista de archivos subidos a la plataforma Bot Docente: ")
@@ -96,11 +97,11 @@ def get_response(msg, db):
             if len(frases)>0:
                 busco_concepto=True
 
-        if busco_concepto:
+        if busco_concepto and frases:
+            print(str(frases))
             response.append("Encontré esto dentro de mis conocimientos sobre "+msg_final+", espero que te sirva...")
-            if frases is not None:
-                for frase in frases:
-                    response.append(frase)
+            for frase in frases:
+                    response.append(frase)                
         else:
             error_msj = ["No te entiendo...","¿Podrías expresarte mejor? No puedo entenderte!","No logro seguir tus pensamientos", "Subiste información de este contenido? Te invito a que lo hagas acá!\n"+URL,"BotDocente no puede entenderte.","Entenderte no puedo.","¿Decías?","No entiendo!!!","No puedo procesar esa petición"]
             response.append(random.choice(error_msj))
