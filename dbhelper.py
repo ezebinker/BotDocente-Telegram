@@ -94,7 +94,7 @@ class DBHelper:
         return datos
 
     def get_rows_by_word(self, search):
-        stmt = "SELECT distinct texto_busqueda FROM conceptosxarchivos WHERE texto_busqueda LIKE '%"+search+"%' LIMIT 5"
+        stmt = "SELECT distinct texto_busqueda FROM conceptosxarchivos WHERE texto_busqueda LIKE '%"+search+"%' LIMIT 4"
         cursor = self.conn.execute(stmt)
         rows = cursor.fetchall()
         return rows
@@ -105,7 +105,7 @@ class DBHelper:
         rows = cursor.fetchone()
         if rows:
             id= rows[0]
-            stmt = "SELECT distinct texto_busqueda FROM conceptosxarchivos WHERE concepto_id ="+str(id)+" LIMIT 5"
+            stmt = "SELECT distinct texto_busqueda FROM conceptosxarchivos WHERE concepto_id ="+str(id)+" LIMIT 4"
             cursor = self.conn.execute(stmt)
             rows = cursor.fetchall()
         return rows

@@ -23,7 +23,7 @@ def strip_accents(text):
 
 def get_response(msg, db):
     response=[]
-    #archivo=""
+    archivo=""
     busco_concepto= False
 
     saludos_para_comparar=[]
@@ -67,7 +67,7 @@ def get_response(msg, db):
         response.append(random.choice(intro_msj) + msg_lower)
         frases = db.get_rows_by_concept(msg_final)
         #TODO: en los conceptos también hay que recorrer palabra por palabra del mensaje como lo hago cuando no lo detecta... no usar el msg_final
-        #archivo = db.get_file_by_concept(msg_final)
+        archivo = db.get_file_by_concept(msg_final)
         if frases:
             for frase in frases:
                 response.append(frase)
@@ -75,8 +75,8 @@ def get_response(msg, db):
         archivos = db.get_nombre_archivos()
         response.append("Lista de archivos subidos a la plataforma Bot Docente: ")
         lista = ""
-        for archivo in  archivos:
-            lista+= archivo + "\n"
+        for archivosLista in archivos:
+            lista+= archivosLista + "\n"
         response.append(lista)
     elif msg_final == "/subirdocumento":
         response.append("Para subir un documento de conocimiento al Bot Docente acceder al siguiente enlace: \n"+URL)
@@ -106,4 +106,4 @@ def get_response(msg, db):
             error_msj = ["No te entiendo...","¿Podrías expresarte mejor? No puedo entenderte!","No logro seguir tus pensamientos", "Subiste información de este contenido? Te invito a que lo hagas acá!\n"+URL,"BotDocente no puede entenderte.","Entenderte no puedo.","¿Decías?","No entiendo!!!","No puedo procesar esa petición"]
             response.append(random.choice(error_msj))
 
-    return response#, archivo
+    return response, archivo

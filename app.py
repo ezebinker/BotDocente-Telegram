@@ -42,17 +42,16 @@ def respond():
     text = update.message.text.encode('utf-8').decode()
 
     if len(text)>0:
-        responses = get_response(text, db)
+        responses, archivo = get_response(text, db)
         print (str(responses))
         for response in responses:
             respuesta = str(response)
             respuesta = clean(respuesta)
             bot.sendMessage(chat_id=chat_id, text=respuesta)
-        
-        #TODO: Para mandar archivo...
-        #if archivo is not None:
-            #bot.send_document(chat_id=chat_id, document=prs, filename=archivo)
 
+        if archivo:
+            #bot.sendMessage(chat_id=chat_id, text=")
+            bot.send_document(chat_id=chat_id, caption="Te adjunto acá también, el material biblográfico de referencia para leer más sobre el tema", document=open(archivo, 'rb'))
     return 'ok'
 
 @app.route('/setwebhook', methods=['GET', 'POST'])
