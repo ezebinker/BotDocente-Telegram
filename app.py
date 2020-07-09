@@ -27,7 +27,15 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def clean(respuesta):
+def clean_input(text):
+    input_cleaned = text
+    input_cleaned = input_cleaned.replace("?", "")
+    input_cleaned= input_cleaned.replace("¿", "")
+    input_cleaned= input_cleaned.replace("¡", "")
+    input_cleaned= input_cleaned.replace("!", "")
+    return input_cleaned
+
+def clean_response(respuesta):
     respuesta_final = respuesta.replace("('", "")
     respuesta_final= respuesta_final.replace("',)", "")
     return respuesta_final
@@ -40,17 +48,17 @@ def respond():
     #msg_id = update.message.message_id
 
     text = update.message.text.encode('utf-8').decode()
+    text = clean_input(text)
 
     if len(text)>0:
         responses, archivo = get_response(text, db)
         print (str(responses))
         for response in responses:
             respuesta = str(response)
-            respuesta = clean(respuesta)
+            respuesta = clean_response(respuesta)
             bot.sendMessage(chat_id=chat_id, text=respuesta)
 
         if archivo:
-            #bot.sendMessage(chat_id=chat_id, text=")
             bot.send_document(chat_id=chat_id, caption="Te adjunto acá también, el material biblográfico de referencia para leer más sobre el tema", document=open(archivo, 'rb'))
     return 'ok'
 

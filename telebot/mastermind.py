@@ -63,11 +63,12 @@ def get_response(msg, db):
     elif msg_final in adios_para_comparar:
         response.append(random.choice(adios))
     elif len([i for i in palabras if i in conceptos_nombre])>0:
-        intro_msj = ["Ah... veo que querés hablar de ", "Okey, veamos que tenemos sobre ",": ","Quiero decirte todo esto acerca de ","Ok! Perfecto. Hablemos de ","Genial!! Tengo esta información de "]
-        response.append(random.choice(intro_msj) + msg_lower)
-        frases = db.get_rows_by_concept(msg_final)
-        #TODO: en los conceptos también hay que recorrer palabra por palabra del mensaje como lo hago cuando no lo detecta... no usar el msg_final
-        archivo = db.get_file_by_concept(msg_final)
+        gen = (i for i in palabras if i in conceptos_nombre)
+        intro_msj = ["Ah... veo que querés hablar de ", "Okey, veamos que tenemos sobre ","","Quiero decirte todo esto acerca de ","Ok! Perfecto. Hablemos de ","Genial!! Tengo esta información de "]
+        for x in gen:
+            response.append(random.choice(intro_msj) + x)
+            frases = db.get_rows_by_concept(x)
+            archivo = db.get_file_by_concept(x)
         if frases:
             for frase in frases:
                 response.append(frase)
