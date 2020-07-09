@@ -9,6 +9,7 @@ import spacy
 import unicodedata
 from model.archivo import Archivo
 from model.concepto import Concepto
+from nltk.corpus import stopwords
 
 def strip_accents(text):
 
@@ -25,6 +26,8 @@ def strip_accents(text):
 
 def process_file(source, db):
     
+    sr = stopwords.words('spanish')
+    
     #Obtengo referencias al nombre y extensión del archivo
     base=os.path.basename(source)
     nombre=os.path.splitext(base)[0]
@@ -36,7 +39,7 @@ def process_file(source, db):
     if extension=='.pptx':
         prs = Presentation(source)
             
-        #Lectura de la PPT
+        #Lectura del PPT
         for slide in prs.slides:
             for shape in slide.shapes:
                 if not shape.has_text_frame:
@@ -55,43 +58,77 @@ def process_file(source, db):
         for index in sorted(indices_a_borrar, reverse=True):
             del contenido[index]
 
+        #Elimino residuos del contenido gral
+        contenido= [frase.replace('\n', '') for frase in contenido]
+        contenido= [frase.replace('\t', '') for frase in contenido]
+
+        #Genero un solo texto con todo el contenido
+        strcont = ' '.join(contenido)
+        oraciones = strcont.split('.')
+
+        #Obtenemos los conceptos o palabras que más aparecen en el contenido
+        freq = nltk.FreqDist(contenido)
+
     elif extension=='.pdf':
-          
+
         with open(source,'rb') as f:
             contenido = slate.PDF(f)
-        f.close() 
+        f.close()
 
     elif extension=='.txt':
 
         file = open(source,mode='r')
-        contenido = file.read()
+        contenido = file.readlines()
         file.close()
+
+        words=[]
+
+        for linea in contenido:
+            words_per_line = linea.split()
+            words.append(words_per_line)
+
+        #Elimino residuos del contenido
+        indices_a_borrar = []
+        for index, item in enumerate(contenido):
+            if len(item)<3 and item!='.':
+                indices_a_borrar.append(index)
+
+        for index in sorted(indices_a_borrar, reverse=True):
+            del contenido[index]
+
+        contenido= [frase.replace('\n', '') for frase in contenido]
+        contenido= [frase.replace('\t', '') for frase in contenido]
+
+        print("Contenido: "+str(contenido))
+        strcont = ' '.join(contenido)
+        oraciones = strcont.split('.')
+
+        words = nltk.tokenize.word_tokenize(strcont)
+
+        clean_tokens = words[:]
+
+        for token in words:
+            if token in sr:
+                clean_tokens.remove(token)
+
+        freq = nltk.FreqDist(clean_tokens)
+
     else:
         print("No se como abrir eso! ")
 
     #### GENERAL A CUALQUIER ARCHIVO DE CONTENIDO ####
-    
-    #Elimino residuos del contenido gral
-    contenido= [frase.replace('\n', '') for frase in contenido]
-    contenido= [frase.replace('\t', '') for frase in contenido]
 
-    #Genero un solo texto con todo el contenido
-    strcont = ' '.join(contenido)
-
-    oraciones = strcont.split('.')
-
-    #Obtenemos los conceptos o palabras que más aparecen en el contenido
-    freq = nltk.FreqDist(contenido)
+    print("freq items: "+str(freq.items()))
         
     claves = []
     topPalabras = '['
 
     for key,val in sorted(freq.items()):
         if val>1:
-            if len(key)>1:
+            if len(key)>2:
                 itemActual='{'+str(key) + ',' + str(val) + '}'
                 topPalabras+=str(itemActual)
-                #TODO: acá habría que chequear que no sea un sustantivo...
+                #TODO: acá habría que chequear que no sea un verbo o una preposición...
                 claves.append(str(key))
 
     topPalabras+=']'
@@ -114,19 +151,11 @@ def process_file(source, db):
             texto_a_guardar = strip_accents(texto_a_guardar)
             db.add_conceptosxarchivo(id_archivo,id_concepto,texto_a_guardar)
 
-    # USO DE LIBRERÍA SPACY
-
     #nlp=spacy.load('es_core_news_md')
-
     #doc = nlp(strcont)
 
     #for token in doc:
        # print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_, token.shape_, token.is_alpha, token.is_stop)
 
     #print("Verbos:", [token.lemma_ for token in doc if token.pos_ == "VERB"])
-
     #sentencias = [s for s in doc.sents]
-
-    #FIN DE BLOQUE LIBRERÍA SPACY
-
-    return archivo.nombre + "      " + archivo.topPalabras

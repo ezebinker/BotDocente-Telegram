@@ -1,0 +1,9 @@
+Un número aleatorio es un valor que se obtiene mediante una función de distribución.
+
+Otro texto.
+
+Un nuevo texto.
+
+Propiedades de los números aleatorios: 
+
+Un número aleatorio es un valor con decimales infinitos entre 0 y 1
