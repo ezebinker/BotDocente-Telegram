@@ -71,9 +71,39 @@ def process_file(source, db):
 
     elif extension=='.pdf':
 
-        with open(source,'rb') as f:
-            contenido = slate.PDF(f)
-        f.close()
+        pdfFileObj = open(source, 'rb')
+        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+
+        for i in range(0,pdfReader.getNumPages()):
+            pageObj = pdfReader.getPage(i)
+            contenido.append(pageObj.extractText())
+
+        #Elimino residuos del contenido
+        indices_a_borrar = []
+        for index, item in enumerate(contenido):
+            if len(item)<3 and item!='.':
+                indices_a_borrar.append(index)
+
+        for index in sorted(indices_a_borrar, reverse=True):
+            del contenido[index]
+
+        #Elimino residuos del contenido gral
+        contenido= [frase.replace('\n', '') for frase in contenido]
+        contenido= [frase.replace('\t', '') for frase in contenido]
+
+        #Genero un solo texto con todo el contenido
+        strcont = ' '.join(contenido)
+        oraciones = strcont.split('.')
+
+        words = nltk.tokenize.word_tokenize(strcont)
+
+        clean_tokens = words[:]
+
+        for token in words:
+            if token in sr:
+                clean_tokens.remove(token)
+
+        freq = nltk.FreqDist(clean_tokens)
 
     elif extension=='.txt':
 
@@ -99,7 +129,6 @@ def process_file(source, db):
         contenido= [frase.replace('\n', '') for frase in contenido]
         contenido= [frase.replace('\t', '') for frase in contenido]
 
-        print("Contenido: "+str(contenido))
         strcont = ' '.join(contenido)
         oraciones = strcont.split('.')
 
@@ -118,7 +147,7 @@ def process_file(source, db):
 
     #### GENERAL A CUALQUIER ARCHIVO DE CONTENIDO ####
 
-    print("freq items: "+str(freq.items()))
+    print("FREQ items: "+str(freq.items()))
         
     claves = []
     topPalabras = '['
@@ -127,9 +156,9 @@ def process_file(source, db):
         if val>1:
             if len(key)>2:
                 itemActual='{'+str(key) + ',' + str(val) + '}'
-                topPalabras+=str(itemActual)
-                #TODO: acá habría que chequear que no sea un verbo o una preposición...
-                claves.append(str(key))
+                if itemActual not in sr: 
+                    topPalabras+=str(itemActual)
+                    claves.append(str(key))
 
     topPalabras+=']'
 

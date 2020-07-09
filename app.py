@@ -5,6 +5,7 @@ from telebot.credentials import bot_token, bot_user_name,URL
 from telebot.mastermind import get_response
 from processing.fileupload import process_file
 import os
+import unicodedata
 from dbhelper import DBHelper
 from pptx import Presentation
 
@@ -23,6 +24,19 @@ os.makedirs(os.path.join(app.instance_path, 'subidas'), exist_ok=True)
 db = DBHelper()
 db.setup()
 
+def strip_accents(text):
+
+    try:
+        text = unicode(text, 'utf-8')
+    except NameError: # unicode is a default on python 3 
+        pass
+
+    text = unicodedata.normalize('NFD', text)\
+           .encode('ascii', 'ignore')\
+           .decode("utf-8")
+
+    return str(text)
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -33,6 +47,7 @@ def clean_input(text):
     input_cleaned= input_cleaned.replace("¿", "")
     input_cleaned= input_cleaned.replace("¡", "")
     input_cleaned= input_cleaned.replace("!", "")
+    input_cleaned= strip_accents(input_cleaned)
     return input_cleaned
 
 def clean_response(respuesta):
