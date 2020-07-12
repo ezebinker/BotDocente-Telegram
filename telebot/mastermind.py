@@ -74,11 +74,14 @@ def get_response(msg, db):
                 response.append(frase)
     elif msg_final == "/archivos":
         archivos = db.get_nombre_archivos()
-        response.append("Lista de archivos subidos a la plataforma Bot Docente: ")
-        lista = ""
-        for archivosLista in archivos:
-            lista+= archivosLista + "\n"
-        response.append(lista)
+        if len(archivos)>0:
+            response.append("Lista de archivos subidos a la plataforma Bot Docente: ")
+            lista = ""
+            for archivosLista in archivos:
+                lista+= archivosLista + "\n"
+            response.append(lista)
+        else:
+            response.append("Aún no se ha subido ningún archivo a la plataforma!")
     elif msg_final == "/subirdocumento":
         response.append("Para subir un documento de conocimiento al Bot Docente acceder al siguiente enlace: \n"+URL)
     elif msg_final == "/consejos":
