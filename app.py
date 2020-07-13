@@ -1,4 +1,4 @@
-from flask import Flask, request,render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for
 import telegram
 from werkzeug.utils import secure_filename
 from telebot.credentials import bot_token, bot_user_name,URL
@@ -74,7 +74,10 @@ def respond():
             bot.sendMessage(chat_id=chat_id, text=respuesta)
 
         if archivo:
-            bot.send_document(chat_id=chat_id, caption="Te adjunto acá también, el material biblográfico de referencia para leer más sobre el tema", document=open(archivo, 'rb'))
+            try:           
+                bot.send_document(chat_id=chat_id, caption="Te adjunto acá también, el material biblográfico de referencia para leer más sobre el tema", document=open(archivo, 'rb'))
+            except Exception:
+                print("TELEGRAM ERROR: Connection problems")
     return 'ok'
 
 @app.route('/setwebhook', methods=['GET', 'POST'])
@@ -96,7 +99,7 @@ def uploader():
         f = request.files['file']
         path = os.path.join(app.instance_path, 'subidas', secure_filename(f.filename))
         f.save(path)
-        contenido = process_file(path, db)
+        process_file(path, db)
         return render_template("exitoso.html")
     else:
         return render_template("error.html")
