@@ -10,6 +10,7 @@ class DBHelper:
         self.conn = sqlite3.connect(dbname, check_same_thread=False)
 
     def setup(self):
+        # This is a one time setup for the database. These statements are commented because I did not want to drop the tables every time the app is run
         #drop1 = "DROP TABLE IF EXISTS archivos"
         #drop2 = "DROP TABLE IF EXISTS conceptos"
         #drop3 = "DROP TABLE IF EXISTS conceptosxarchivos"
@@ -19,6 +20,7 @@ class DBHelper:
         textoidx = "CREATE INDEX IF NOT EXISTS textoIndex ON conceptos (texto ASC)"
         tbl3stmt = "CREATE TABLE IF NOT EXISTS conceptosxarchivos (archivo_id INTEGER, concepto_id INTEGER, texto_busqueda TEXT, FOREIGN KEY (archivo_id) REFERENCES archivos (id),FOREIGN KEY (concepto_id)REFERENCES conceptos (id) ) "
 
+        # Create the tables. These are commented because I did not want to drop the tables every time the app is run
         #self.conn.execute(drop1)
         #self.conn.execute(drop2)
         #self.conn.execute(drop3)

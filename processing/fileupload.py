@@ -180,6 +180,8 @@ def process_file(source, db):
             texto_a_guardar = strip_accents(texto_a_guardar)
             db.add_conceptosxarchivo(id_archivo,id_concepto,texto_a_guardar)
 
+    # The next lines are commented because I did not continue the development of the NLP part
+
     #nlp=spacy.load('es_core_news_md')
     #doc = nlp(strcont)
 

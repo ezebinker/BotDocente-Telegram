@@ -18,7 +18,6 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'pptx'}
 app = Flask(__name__)
 app.config['MAX_CONTENT_PATH'] = 16 * 1024 * 1024
 
-# create the folders when setting up your app
 os.makedirs(os.path.join(app.instance_path, 'subidas'), exist_ok=True)
 
 db = DBHelper()
@@ -28,7 +27,7 @@ def strip_accents(text):
 
     try:
         text = unicode(text, 'utf-8')
-    except NameError: # unicode is a default on python 3 
+    except NameError: 
         pass
 
     text = unicodedata.normalize('NFD', text)\
@@ -60,7 +59,6 @@ def respond():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
 
     chat_id = update.message.chat.id
-    #msg_id = update.message.message_id
 
     text = update.message.text.encode('utf-8').decode()
     text = clean_input(text)

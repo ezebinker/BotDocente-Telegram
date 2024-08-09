@@ -12,7 +12,7 @@ def strip_accents(text):
 
     try:
         text = unicode(text, 'utf-8')
-    except NameError: # unicode is a default on python 3 
+    except NameError:
         pass
 
     text = unicodedata.normalize('NFD', text)\
