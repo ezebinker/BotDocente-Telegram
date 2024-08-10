@@ -1,5 +1,17 @@
 # BotDocente
 
+## Autor:
+Ezequiel Binker
+
+## Fecha:
+Julio 2020
+
+## Versión:
+1.0
+
+## Estado:
+En desarrollo
+
 ## Descripción:
 La inteligencia artificial permite resolver diversos problemas del humano en su vida cotidiano, como puede ser la **desorganización, la presencia física o la falta de productividad**. En este caso, el proyecto está orientado a resolver una problemática de tiempos, en los cuales utilizando ciertas técnicas de aprendizaje automático, se puede **facilitar el trabajo de los trabajadores de la educación**, en lo que respecta principalmente la misma a distancia. 
 
@@ -27,5 +39,3 @@ Para ejecutar este proyecto:
 3. Iniciar el servidor Flask ```python app.py```
 4. Levantar una URL pública con ngrok ```./ngrok http 5000```
 5. Ingresar a la URL provista por ngrok y al final escribir /setwebhook para que el bot escuche ese endpoint
-
-
