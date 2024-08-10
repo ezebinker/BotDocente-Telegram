@@ -1,3 +1,3 @@
-bot_token = "1215444134:AAGRKzHIu-ofP__t_HjQyjO_EHZkARXMeBo"
-bot_user_name = "@Docente_Bbot"
-URL = "https://8ec3301f6c6e.ngrok.io/"
+bot_token = "bot_token"
+bot_user_name = "@bot_name"
+URL = "https://bot_name.ngrok.io/"
